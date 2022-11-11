@@ -1,6 +1,7 @@
 package com.enterprise.admin.login;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -22,7 +23,7 @@ public class LoginServiceImpl implements ILoginService {
 		
 	@Autowired
 	private IApplicationFileHandler<UserDTO> fileHandler;
-	private Path docStorageLocation;
+	private Path userConfigLocation;
 	private DefaultUserProperty userProperty;
 	private DocumentStorageProperty documentStorageProperty;
 	
@@ -32,7 +33,8 @@ public class LoginServiceImpl implements ILoginService {
 		
 		this.userProperty=userProperty;
 		this.documentStorageProperty=documentStorageProperty;
-		this.docStorageLocation = Paths.get(documentStorageProperty.getUploadDirectory()).toAbsolutePath().normalize();
+		this.userConfigLocation = Paths.get(documentStorageProperty.getUserConfig()).toAbsolutePath().normalize();
+		Files.createDirectories(this.userConfigLocation);
 	}
 	
 	@Override
@@ -42,7 +44,7 @@ public class LoginServiceImpl implements ILoginService {
 		ApplicationResponseData<UserValidationResult> responseData=new ApplicationResponseData<>();
 		UserValidationResult userValidationResult=new UserValidationResult();
 		userValidationResult.setUser(userDTO.getUser()).setValidUser(false).setDefaultUser(false);
-		UserDTO userDTOFromFile = fileHandler.deDerializeFromFile(docStorageLocation, documentStorageProperty.getUserFile());
+		UserDTO userDTOFromFile = fileHandler.deDerializeFromFile(userConfigLocation, documentStorageProperty.getUserFile());
 		if(userDTOFromFile !=null)
 		{
 			System.out.println(" validating User  against file ");
@@ -73,7 +75,7 @@ public class LoginServiceImpl implements ILoginService {
 	@Override
 	public Boolean saveLoginDetail(UserDTO userDTO) {
 
-		return fileHandler.serializeToFile(userDTO,docStorageLocation, documentStorageProperty.getUserFile());
+		return fileHandler.serializeToFile(userDTO,userConfigLocation, documentStorageProperty.getUserFile());
 		
 	}
 

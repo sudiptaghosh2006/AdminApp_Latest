@@ -14,6 +14,16 @@ public class DocumentStorageProperty {
 	private String gcpSettingFile;
 	private String onpremSettingFile;
 	
+	private String userConfig;
+	
+	public String getUserConfig() {
+		return userConfig;
+	}
+
+	public void setUserConfig(String userConfig) {
+		this.userConfig = userConfig;
+	}
+
 	public String getOnpremSettingFile() {
 		return onpremSettingFile;
 	}
