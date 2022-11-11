@@ -1,0 +1,20 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.capgemini.services.root</groupId>
+    <artifactId>com.capgemini.services.root</artifactId>
+    <version>2.0.0.1</version>
+  </parent>
+  <artifactId>com.capgemini.terraform.parser</artifactId>
+  
+  <dependencies>
+
+		<!-- https://mvnrepository.com/artifact/com.bertramlabs.plugins/hcl4j -->
+		<dependency>
+			<groupId>com.bertramlabs.plugins</groupId>
+			<artifactId>hcl4j</artifactId>
+			<version>0.4.4</version>
+		</dependency>
+
+	</dependencies>
+</project>

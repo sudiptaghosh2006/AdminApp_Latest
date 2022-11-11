@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.capgemini.services.root</groupId>
+		<artifactId>com.capgemini.services.root</artifactId>
+		<version>2.0.0.1</version>
+	</parent>
+	<artifactId>com.capgemini.admin.api</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.capgemini.services.root</groupId>
+			<artifactId>com.capgemini.admin.services</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+
+
+
+	</dependencies>
+
+	<build>
+
+
+		<plugins>
+
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+		</plugins>
+
+		<finalName>${project.artifactId}</finalName>
+	</build>
+</project>
