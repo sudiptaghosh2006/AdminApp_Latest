@@ -32,10 +32,9 @@ public class DocumentController {
 	private static final String STRING_UNDERSCORE="_";
 
 	private static final String GCP = "GCP";
-
 	private static final String AZURE = "AZURE";
-
 	private static final String AWS = "AWS";
+	private static final String ONPREM = "ONPREM";
 
 	@Autowired
 	private IDocumentService<ReaourceConfiguration> documentService;
@@ -61,7 +60,11 @@ public class DocumentController {
 		{
 			fileNamePattern=documentStorageProperty.getGcpSettingFile();
 		}
-		
+				
+		else if(cloudProvider.equalsIgnoreCase(ONPREM))
+		{
+			fileNamePattern=documentStorageProperty.getOnpremSettingFile();
+		}
 		String finalFileName=fileNamePattern+STRING_UNDERSCORE+systemVersion
 				+STRING_UNDERSCORE+CommonUtilities.getUniqueStringTime()
 				+documentStorageProperty.getSettingFileExtension();

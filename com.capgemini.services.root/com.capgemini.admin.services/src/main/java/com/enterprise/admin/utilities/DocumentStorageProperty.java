@@ -12,6 +12,16 @@ public class DocumentStorageProperty {
 	private String awsSettingFile;
 	private String azureSettingFile;
 	private String gcpSettingFile;
+	private String onpremSettingFile;
+	
+	public String getOnpremSettingFile() {
+		return onpremSettingFile;
+	}
+
+	public void setOnpremSettingFile(String onpremSettingFile) {
+		this.onpremSettingFile = onpremSettingFile;
+	}
+
 	private String settingFileExtension;
 	private String cloudProviderList;
 	private String availableVersions;

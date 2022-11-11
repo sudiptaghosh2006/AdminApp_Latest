@@ -13,7 +13,10 @@ import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileOwnerAttributeView;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -41,26 +44,22 @@ public class ApplicationFileHandler<T> implements IApplicationFileHandler<T> {
 		return returnValue;
 
 	}
-	
-	public boolean deleteFile( Path docStorageLocation, String fileName) 
-	{
-		boolean returnValue=false;
+
+	public boolean deleteFile(Path docStorageLocation, String fileName) {
+		boolean returnValue = false;
 		Path finalPath = Paths.get(docStorageLocation.toString(), fileName);
 		try {
 			boolean exists = Files.exists(finalPath);
-			if(exists)
-			{
-				returnValue=  Files.deleteIfExists(finalPath);
+			if (exists) {
+				returnValue = Files.deleteIfExists(finalPath);
+			} else {
+				throw new ApplicationCommonException(fileName + "  Not found ");
 			}
-			else {
-				throw new ApplicationCommonException(fileName +"  Not found ");
-			}
-		} catch (Exception e) 
-		{
-			
+		} catch (Exception e) {
+
 			throw new ApplicationCommonException(e.getMessage());
 		}
-		
+
 		return returnValue;
 
 	}
@@ -74,51 +73,55 @@ public class ApplicationFileHandler<T> implements IApplicationFileHandler<T> {
 			System.out.println("Object has been deserialized ");
 
 		} catch (Exception e) {
-			System.out.println("File Not Found "+e.getMessage());
-		} 
+			System.out.println("File Not Found " + e.getMessage());
+		}
 
 		return t;
 	}
 
 	public List<FileDetails> listFiles(Path docStorageLocation) 
 	{
-		List<FileDetails> listFileDetails=new ArrayList<>();
-		try {
-			List<Path> listFilePath = Files.walk(docStorageLocation).filter(path->path.toFile().isFile()).toList();
-			for (Path path : listFilePath) 
-			{
-				
-				FileDetails fileDetails=new FileDetails();
+		System.out.println("Document Storage Location "+docStorageLocation);
+		List<FileDetails> listFileDetails = new ArrayList<>();
+		try (Stream<Path> stream = Files.list(docStorageLocation))
+		{
+			List<Path> listFilePath = stream.filter(file -> !Files.isDirectory(file))
+					//.map(Path::getFileName)
+					//.map(Path::toString)
+					//.filter(file->file.startsWith(docStorageLocation.))
+					.collect(Collectors.toList());
+
+			for (Path path : listFilePath) {
+
+				FileDetails fileDetails = new FileDetails();
 				fileDetails.setFileName(path.getFileName().toString());
 				
+				System.out.println(path);
+
 				System.out.println("########################################################### ");
-				BasicFileAttributeView basicView = 
-						  Files.getFileAttributeView(path, BasicFileAttributeView.class);
-				
-				
-				
+				BasicFileAttributeView basicView = Files.getFileAttributeView(path, BasicFileAttributeView.class);
+
 				BasicFileAttributes basicFileAttributes = basicView.readAttributes();
-			
-				System.out.println("file Name "+path.getFileName().toString());
-				System.out.println("creattion time "+basicFileAttributes.creationTime());
-				System.out.println("Access "+basicFileAttributes.lastAccessTime().toInstant());
-				System.out.println("size"+basicFileAttributes.size());
-//				
-				
-				FileOwnerAttributeView ownerView = Files.getFileAttributeView(
-						path, FileOwnerAttributeView.class);
-				
-				System.out.println("Owner "+ownerView.getOwner().getName());
-				
+
+				System.out.println("file Name " + path.getFileName().toString());
+				System.out.println("creattion time " + basicFileAttributes.creationTime());
+				System.out.println("Access " + basicFileAttributes.lastAccessTime().toInstant());
+				System.out.println("size" + basicFileAttributes.size()); //
+
+				FileOwnerAttributeView ownerView = Files.getFileAttributeView(path, FileOwnerAttributeView.class);
+
+				System.out.println("Owner " + ownerView.getOwner().getName());
+
 				fileDetails.setCreationTime(basicFileAttributes.creationTime().toString());
 				fileDetails.setLastAccessedTime(basicFileAttributes.lastAccessTime().toString());
 				fileDetails.setSize(basicFileAttributes.size());
 				fileDetails.setOwener(ownerView.getOwner().getName());
-				
+
 				System.out.println("########################################################### ");
-				
+
 				listFileDetails.add(fileDetails);
 			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,4 +129,6 @@ public class ApplicationFileHandler<T> implements IApplicationFileHandler<T> {
 		
 		return listFileDetails;
 	}
+
+	
 }
